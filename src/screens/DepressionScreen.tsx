@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function DepressionScreen() {
+export default function DepressionScreen({ navigation }: any) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.card}>
@@ -11,7 +11,11 @@ export default function DepressionScreen() {
 				</Text>
 			</View>
 
-			<TouchableOpacity style={styles.actionButton}>
+			<TouchableOpacity
+				style={styles.actionButton}
+				// Add this onPress event right here!
+				onPress={() => navigation.navigate('Breathing')}
+			>
 				<Text style={styles.buttonText}>Guided Breathing Exercise</Text>
 			</TouchableOpacity>
 

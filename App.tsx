@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import CategoriesScreen from './src/screens/CategoriesScreen';
 import DepressionScreen from './src/screens/DepressionScreen';
+import BreathingScreen from './src/screens/BreathingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,11 @@ export default function App() {
           name="Depression"
           component={DepressionScreen}
           options={{ title: 'Depression Support' }}
+        />
+        <Stack.Screen
+          name="Breathing"
+          component={BreathingScreen}
+          options={{ title: 'Breathe', headerStyle: { backgroundColor: '#1A202C' }, headerTintColor: '#fff' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
