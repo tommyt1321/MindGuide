@@ -25,8 +25,16 @@ export default function CategoriesScreen({ navigation }: any) {
 							onPress={() => {
 								if (item.title === 'Depression') {
 									navigation.navigate('Depression');
-								} else {
-									console.log(`${item.title} pressed`);
+								} else if (item.title === 'Anxiety') {
+									navigation.navigate('Anxiety');
+								} else if (item.title === 'Anger') {
+									navigation.navigate('Anger');
+								} else if (item.title === 'Paranoia') {
+									navigation.navigate('Paranoia');
+								} else if (item.title === 'Hyperactivity') {
+									navigation.navigate('Hyperactivity');
+								} else if (item.title === 'Stress') {
+									navigation.navigate('Stress');
 								}
 							}}
 						>
