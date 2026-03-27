@@ -1,7 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
+    const [entryCount, setEntryCount] = useState(0);
+    const [isVaultSecured, setIsVaultSecured] = useState(false);
+
+    // This magic function runs EVERY time the user clicks the Profile tab
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            loadRealStats();
+        });
+        return unsubscribe;
+    }, [navigation]);
+
+    const loadRealStats = async () => {
+        try {
+            // 1. Count the Journal Entries
+            const storedEntries = await AsyncStorage.getItem('@journal_entries');
+            if (storedEntries) {
+                const parsedEntries = JSON.parse(storedEntries);
+                setEntryCount(parsedEntries.length);
+            }
+
+            // 2. Check if the Vault has a PIN
+            const storedPin = await AsyncStorage.getItem('@journal_pin');
+            setIsVaultSecured(!!storedPin); // turns it into a true/false boolean
+        } catch (error) {
+            console.log("Error loading stats", error);
+        }
+    };
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.avatarCircle}>
@@ -9,15 +38,17 @@ export default function ProfileScreen() {
             </View>
             <Text style={styles.userName}>MindGuide User</Text>
 
-            {/* Stats Row */}
+            {/* --- REAL DYNAMIC STATS ROW --- */}
             <View style={styles.statsRow}>
                 <View style={styles.statBox}>
-                    <Text style={styles.statNum}>12</Text>
-                    <Text style={styles.statLabel}>Check-ins</Text>
+                    <Text style={styles.statNum}>{entryCount}</Text>
+                    <Text style={styles.statLabel}>Vault Entries</Text>
                 </View>
                 <View style={styles.statBox}>
-                    <Text style={styles.statNum}>4</Text>
-                    <Text style={styles.statLabel}>Day Streak</Text>
+                    <Text style={[styles.statNum, { color: isVaultSecured ? '#48BB78' : '#A0AEC0' }]}>
+                        {isVaultSecured ? 'ON' : 'OFF'}
+                    </Text>
+                    <Text style={styles.statLabel}>PIN Security</Text>
                 </View>
             </View>
 
@@ -48,11 +79,11 @@ const styles = StyleSheet.create({
     statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 },
     statBox: { backgroundColor: '#FFF', width: '45%', padding: 20, borderRadius: 15, alignItems: 'center', elevation: 2 },
     statNum: { fontSize: 24, fontWeight: 'bold', color: '#4A90E2' },
-    statLabel: { fontSize: 14, color: '#718096' },
+    statLabel: { fontSize: 14, color: '#718096', marginTop: 5 },
     menu: { backgroundColor: '#FFF', borderRadius: 15, padding: 5, marginBottom: 30 },
     menuItem: { padding: 15, borderBottomWidth: 1, borderBottomColor: '#F7FAFC' },
     menuText: { fontSize: 16, color: '#4A5568' },
-    sosButton: { backgroundColor: '#FED7D7', padding: 20, borderRadius: 15, borderContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#FC8181' },
+    sosButton: { backgroundColor: '#FED7D7', padding: 20, borderRadius: 15, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#FC8181' },
     sosTitle: { color: '#C53030', fontWeight: '900', fontSize: 18 },
     sosSub: { color: '#C53030', fontSize: 12, marginTop: 5 }
 });
